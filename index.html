@@ -3,160 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Task - Allinonebd</title>
+    <title>Allinonebd - Earn Rewards</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .bottom-nav-gradient {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        .page { display: none; }
+        .page.active { display: block; }
+        .disabled-button { background-color: #9ca3af; cursor: not-allowed; }
+        #toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2d3748;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="max-w-md mx-auto">
 
-    <!-- Header Section with Ad Banner -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto p-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-600">Allinonebd Tasks</h1>
-        </div>
-        <div class="p-4 text-center bg-gray-200 border-t border-b">
-            <!-- Header Banner Ad (e.g., 728x90) goes here -->
-            <p class="text-gray-500">Header Banner Ad Placeholder</p>
-        </div>
-    </header>
-
-    <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-6">
-
-        <!-- Main Content: Task Offers -->
-        <main class="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-lg">
-            
-            <!-- App Install Offers Section -->
+    <div class="min-h-screen bg-white shadow-lg pb-24">
+        <header class="bg-blue-600 text-white p-4 flex items-center space-x-3 rounded-b-2xl sticky top-0 z-10">
+            <button id="back-button" class="px-3 py-1 text-sm font-semibold flex-shrink-0 flex items-center justify-center rounded-md bg-blue-700 hover:bg-blue-800 transition-colors">
+                Back
+            </button>
+            <img id="user-avatar" src="https://placehold.co/50x50/ffffff/333333?text=U" alt="User Avatar" class="w-12 h-12 rounded-full border-2 border-white">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">App Install Offers</h2>
-                <p class="text-gray-600 mb-6">Install the apps below and follow the instructions to earn rewards.</p>
-                <div class="space-y-4">
-                    <!-- Example Offer 1 -->
-                    <a href="#" target="_blank" class="block bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-all text-left">
-                        <p class="font-bold text-lg">Install App A & Get 50 BDT</p>
-                        <p class="text-sm opacity-90">Install and open the app for 5 minutes.</p>
-                    </a>
-                    <!-- Example Offer 2 -->
-                    <a href="#" target="_blank" class="block bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-all text-left">
-                        <p class="font-bold text-lg">Install App B & Get 70 BDT</p>
-                        <p class="text-sm opacity-90">Install, register, and complete one level.</p>
-                    </a>
+                <h1 id="user-name" class="text-lg font-bold">Loading...</h1>
+                <p id="user-balance" class="text-sm font-medium">Loading...</p>
+            </div>
+        </header>
+
+        <div class="bg-blue-100 text-blue-800 p-2 text-sm font-semibold">
+            <marquee id="notice-bar-text">Loading latest announcements...</marquee>
+        </div>
+
+        <div id="page-container">
+            <div id="home-page" class="page active">
+                <div class="p-2 text-center bg-gray-100 my-2">
+                    <img src="https://placehold.co/320x50/eee/333?text=Top+Banner+Ad" alt="Top Banner Ad" class="mx-auto">
+                </div>
+                <main class="p-4 space-y-6">
+                    <section class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-center shadow-sm">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-1">Earn Rewards</h2>
+                        <div class="mt-4 bg-white p-4 rounded-lg border">
+                            <h3 class="text-lg font-semibold text-gray-700">Today's Tasks</h3>
+                            <div class="flex justify-between items-center mt-3 text-gray-600">
+                                <span>Total Tasks:</span>
+                                <span id="total-tasks" class="font-bold">1000</span>
+                            </div>
+                            <div class="flex justify-between items-center mt-1 text-gray-600">
+                                <span>Completed:</span>
+                                <span id="completed-tasks" class="font-bold text-green-600">0</span>
+                            </div>
+                            <div class="flex justify-between items-center mt-1 text-gray-600">
+                                <span>Remaining:</span>
+                                <span id="remaining-tasks" class="font-bold text-red-600">1000</span>
+                            </div>
+                            <button onclick="navigateTo('earn-page')" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg mt-5 hover:bg-blue-700 transition duration-300 flex items-center justify-center space-x-2">
+                                <span>Start Earning</span>
+                                <i class="ph-arrow-right-bold"></i>
+                            </button>
+                        </div>
+                    </section>
+                    <section class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-center shadow-sm">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-1">Refer & Earn</h2>
+                         <div class="mt-4 bg-white p-4 rounded-lg border">
+                            <div class="flex justify-between items-center mt-1 text-gray-600">
+                                <span>Total Referrals:</span>
+                                <span id="total-referrals" class="font-bold">0</span>
+                            </div>
+                            <button onclick="navigateTo('profile-page')" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg mt-5 hover:bg-indigo-700 transition duration-300 flex items-center justify-center space-x-2">
+                                 <i class="ph-share-network-bold"></i>
+                                <span>Invite Friends</span>
+                            </button>
+                        </div>
+                    </section>
+                </main>
+                <div class="p-2 text-center bg-gray-100 mt-2">
+                     <img src="https://placehold.co/320x50/eee/333?text=Bottom+Banner+Ad" alt="Bottom Banner Ad" class="mx-auto">
                 </div>
             </div>
 
-            <hr class="my-8">
-
-            <!-- Mini Quiz Offers Section -->
-            <div>
-                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Mini Quiz Offers</h2>
-                <p class="text-gray-600 mb-6">Participate in the quiz, spend the required time, and earn rewards.</p>
-                <div class="space-y-4">
-                    <!-- Example Quiz Offer -->
-                    <div class="bg-gray-50 p-4 rounded-lg border">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-lg text-gray-800">General Knowledge Quiz</p>
-                                <p class="text-sm text-gray-600">Answer 10 simple questions.</p>
-                            </div>
-                            <button onclick="startQuizTask()" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">Start Quiz</button>
+            <div id="earn-page" class="page p-4">
+                 <div class="p-2 text-center bg-gray-100 mb-4">
+                    <img src="https://placehold.co/320x50/eee/333?text=Top+Banner+Ad" alt="Top Banner Ad" class="mx-auto">
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Available Tasks</h2>
+                <p class="text-gray-600 mt-2">Choose a task type to start earning.</p>
+                <div class="space-y-4 mt-6">
+                    <button onclick="navigateTo('cta-task-page')" class="w-full bg-teal-500 text-white font-bold py-4 px-4 rounded-lg hover:bg-teal-600 transition duration-300 text-left flex items-center space-x-4">
+                        <i class="ph-rocket-launch-bold text-3xl"></i>
+                        <div>
+                            <span class="text-lg">Start CTA Tasks</span>
+                            <span class="text-sm block opacity-80">Complete high-reward tasks.</span>
                         </div>
-                        <!-- Timer and Submit button will appear here -->
-                        <div id="quiz-timer-section" class="mt-4 text-center" style="display: none;">
-                            <p class="text-lg font-semibold text-red-600">Time remaining: <span id="timer">40</span>s</p>
-                            <p class="text-xs text-gray-500">Please stay on the quiz page. You can submit after the timer ends.</p>
-                            <button id="submit-quiz-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg mt-4 opacity-50 cursor-not-allowed" disabled>
-                                Submit Task
+                    </button>
+                    <button onclick="navigateTo('ads-task-page')" class="w-full bg-purple-500 text-white font-bold py-4 px-4 rounded-lg hover:bg-purple-600 transition duration-300 text-left flex items-center space-x-4">
+                        <i class="ph-monitor-play-bold text-3xl"></i>
+                        <div>
+                            <span class="text-lg">View Daily Ads</span>
+                            <span id="ads-left-text" class="text-sm block opacity-80">Watch short ads to earn. (20 left)</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="p-2 text-center bg-gray-100 mt-6">
+                    <img src="https://placehold.co/320x50/eee/333?text=Bottom+Banner+Ad" alt="Bottom Banner Ad" class="mx-auto">
+                </div>
+            </div>
+            
+            <div id="cta-task-page" class="page p-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Task Rules</h2>
+                    <button id="lang-toggle" onclick="toggleLanguage()" class="bg-gray-200 text-gray-800 font-semibold py-2 px-3 rounded-lg text-xs">বাংলা</button>
+                </div>
+                <div id="task-rules-content"></div>
+                <!-- MODIFICATION: Button action changed -->
+                <button onclick="redirectToTaskPage()" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg mt-5 hover:bg-green-700 transition duration-300">I Understand, Continue</button>
+            </div>
+
+            <!-- This page is now obsolete as we are redirecting to task.allinonebd.me -->
+            <div id="cta-network-page" class="page p-4">
+                <!-- Content removed -->
+            </div>
+
+            <div id="ads-task-page" class="page p-4">
+                <h2 class="text-2xl font-bold text-gray-800">View Ads</h2>
+                <div id="ad-container" class="mt-6 p-5 border rounded-lg text-center bg-gray-800 text-white relative h-64 flex flex-col items-center justify-center" style="display: none;">
+                    <p>Ad will be shown here</p>
+                    <div id="ad-timer-container" class="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                        Time left: <span id="ad-timer">15</span>s
+                    </div>
+                    <button id="ad-close-btn" class="hidden absolute top-2 left-2 bg-red-500 rounded-full w-6 h-6 flex items-center justify-center text-white font-bold">X</button>
+                </div>
+                <button id="start-ad-btn" onclick="startAdView()" class="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-purple-700">Start Viewing Ads</button>
+            </div>
+
+            <div id="withdraw-page" class="page p-4">
+                 <h2 class="text-2xl font-bold text-gray-800 mt-4">Withdraw Funds</h2>
+                 <div class="mt-4 bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                    <p class="text-sm text-blue-800"><b>Note:</b> Withdrawals are processed twice a month: on the 15th-17th, and on the last 3 days of the month.</p>
+                 </div>
+                 <div class="mt-6 space-y-4">
+                    <div>
+                        <label for="withdraw-method" class="block text-sm font-medium text-gray-700">Payment Method</label>
+                        <select id="withdraw-method" onchange="updateWithdrawUI()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="bkash">Bkash</option>
+                            <option value="nagad">Nagad</option>
+                            <option value="rocket">Rocket</option>
+                            <option value="payoneer">Payoneer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="withdraw-address-label" for="withdraw-address" class="block text-sm font-medium text-gray-700">Account Number</label>
+                        <input type="text" id="withdraw-address" class="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md p-2" placeholder="e.g., 01700000000">
+                    </div>
+                    <div>
+                        <label for="withdraw-amount" class="block text-sm font-medium text-gray-700">Amount (Min. 2000 BDT)</label>
+                        <input type="number" id="withdraw-amount" class="mt-1 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md p-2" placeholder="2000">
+                    </div>
+                 </div>
+                 <button class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg mt-6 hover:bg-green-700">Submit Request</button>
+                
+                 <h3 class="text-xl font-bold text-gray-800 mt-8">Withdrawal History</h3>
+                 <div class="mt-4 border rounded-lg p-3 bg-gray-50 text-center">
+                    <p class="text-gray-600">Your payment history will appear here.</p>
+                 </div>
+            </div>
+
+            <div id="profile-page" class="page p-4">
+                <div class="text-center">
+                    <img id="profile-avatar" src="https://placehold.co/80x80/e0e7ff/4338ca?text=U" class="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-lg">
+                    <h2 id="profile-name" class="text-2xl font-bold text-gray-800 mt-3">Loading...</h2>
+                    <p id="profile-username" class="text-gray-500">@username</p>
+                    <div class="mt-2">
+                        <p class="text-lg font-semibold text-green-600">Balance: <span id="profile-balance">BDT 0.00</span></p>
+                        <p class="text-sm font-medium text-yellow-600">Pending Balance: <span id="profile-pending-balance">BDT 0.00</span></p>
+                    </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 gap-4 text-center">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border">
+                        <p class="text-sm text-gray-600">Total Earnings</p>
+                        <p id="profile-total-earned" class="text-2xl font-bold text-blue-600">BDT 0.00</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border">
+                        <p class="text-sm text-gray-600">Ads Watched</p>
+                        <p id="profile-ads-watched" class="text-2xl font-bold">0</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold text-gray-800">Refer & Earn</h3>
+                    <div class="mt-4 bg-gray-50 border p-4 rounded-lg">
+                        <div class="flex justify-between items-start mb-3">
+                            <div id="referral-note-content" class="text-left text-sm text-gray-700">
+                                <p>You will receive a <b>10 BDT</b> bonus when your referred friend meets the following conditions:</p>
+                                <ul class="list-disc list-inside mt-1">
+                                    <li><span class="text-red-600 font-bold">Must complete a full 7 days of work.</span></li>
+                                    <li><span class="text-red-600 font-bold">Must work actively for at least 15 days within a month.</span></li>
+                                </ul>
+                                <p class="text-xs text-gray-500 mt-2">The bonus will remain in your Pending Balance until the conditions are met.</p>
+                            </div>
+                            <button id="referral-lang-toggle" onclick="toggleReferralNoteLanguage()" class="bg-gray-200 text-gray-800 font-semibold py-1 px-2 rounded-lg text-xs ml-2 flex-shrink-0">
+                                বাংলা
                             </button>
                         </div>
+                        <div class="mt-3 flex items-center bg-white border rounded-lg p-2">
+                            <input id="referral-link" type="text" class="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none" value="Loading your link..." readonly>
+                            <button onclick="copyReferralLink()" class="ml-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-xs font-semibold">Copy</button>
+                        </div>
+                        <button onclick="shareReferralLink()" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg mt-4 hover:bg-indigo-700">Share Link</button>
+                    </div>
+                </div>
+                 <div class="mt-8">
+                    <h3 class="text-xl font-bold text-gray-800">Your Referrals (<span id="profile-total-referrals">0</span>)</h3>
+                    <div class="mt-4 border rounded-lg p-3 bg-gray-50 text-center">
+                        <p class="text-gray-600">Your referred users' list will appear here.</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Post-Task Options (Initially hidden) -->
-            <div id="post-task-options" class="mt-8 text-center" style="display: none;">
-                <h3 class="text-xl font-bold text-green-600 mb-4">Task Submitted! What's next?</h3>
-                <div class="flex gap-4">
-                    <button class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600">Do Another Task</button>
-                    <button onclick="goBackToBot()" class="flex-1 bg-gray-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-800">Go Back to Bot</button>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Sidebar with Ad Placeholders -->
-        <aside class="w-full lg:w-1/3 space-y-6">
-            <div class="bg-white p-4 rounded-lg shadow-lg text-center">
-                <!-- Sidebar Ad (e.g., 300x250) goes here -->
-                <p class="text-gray-500">Sidebar Ad Placeholder 1</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-lg text-center">
-                <!-- Sidebar Ad (e.g., 300x600) goes here -->
-                <p class="text-gray-500">Sidebar Ad Placeholder 2</p>
-            </div>
-        </aside>
-
+        </div>
     </div>
 
-    <!-- Popup Ad logic can be added here -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bottom-nav-gradient text-white p-2 flex justify-around rounded-t-2xl shadow-lg">
+        <a href="#" onclick="navigateTo('home-page')" class="nav-link text-center p-2 rounded-lg">
+            <i class="ph-house-fill text-2xl"></i>
+            <span class="text-xs block font-semibold">Home</span>
+        </a>
+        <a href="#" onclick="navigateTo('earn-page')" class="nav-link text-center p-2 rounded-lg">
+            <i class="ph-money-fill text-2xl"></i>
+            <span class="text-xs block font-semibold">Earn</span>
+        </a>
+        <a href="#" onclick="navigateTo('withdraw-page')" class="nav-link text-center p-2 rounded-lg">
+            <i class="ph-wallet-fill text-2xl"></i>
+            <span class="text-xs block font-semibold">Withdraw</span>
+        </a>
+        <a href="#" onclick="navigateTo('profile-page')" class="nav-link text-center p-2 rounded-lg">
+            <i class="ph-user-fill text-2xl"></i>
+            <span class="text-xs block font-semibold">Profile</span>
+        </a>
+    </nav>
+    
+    <div id="toast"></div>
 
-    <script>
-        let userId = null;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // This script will read the user ID from the URL when the page loads
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            userId = urlParams.get('userId');
-            if (userId) {
-                console.log('Task page loaded for User ID:', userId);
-            } else {
-                document.body.innerHTML = "<h1 class='text-center text-red-500 p-10'>Invalid Access. Please open from the Telegram bot.</h1>";
-            }
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAVMpxqTzDCAhpIrwf-Vp4fhHcdls36yM",
+            authDomain: "allinonebdapp.firebaseapp.com",
+            projectId: "allinonebdapp",
+            storageBucket: "allinonebdapp.appspot.com",
+            messagingSenderId: "755907154415",
+            appId: "1:755907154415:web:f61e9fa40b23b47f91661a"
         };
 
-        // Function to handle the quiz task
-        function startQuizTask() {
-            // Replace '#' with the actual quiz link from your CPA network
-            window.open('#', '_blank');
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let currentUser = null;
 
-            const timerSection = document.getElementById('quiz-timer-section');
-            const submitButton = document.getElementById('submit-quiz-btn');
-            const timerDisplay = document.getElementById('timer');
-            timerSection.style.display = 'block';
+        let pageHistory = ['home-page'];
 
-            let timeLeft = 40;
-            submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-
-            const timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = '0';
-                    submitButton.disabled = false;
-                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                    submitButton.textContent = 'Click to Submit Task';
-                    submitButton.onclick = submitTask; // Assign the submit function
-                }
-            }, 1000);
+        window.navigateTo = function(pageId) {
+            const currentPageId = pageHistory[pageHistory.length - 1];
+            if (currentPageId === pageId) return;
+            document.getElementById(currentPageId).classList.remove('active');
+            document.getElementById(pageId).classList.add('active');
+            pageHistory.push(pageId);
+            updateUI();
         }
-
-        // Function to handle task submission
-        function submitTask() {
-            // In a real scenario, this would send a request to your backend for verification
-            console.log(`Task submitted for user: ${userId}`);
-            
-            // Hide the task sections and show post-task options
-            document.getElementById('quiz-timer-section').style.display = 'none';
-            document.getElementById('post-task-options').style.display = 'block';
-            alert("Task submitted successfully! Your reward will be added after verification.");
-        }
-
-        // Function to go back to the bot (closes the web app)
-        function goBackToBot() {
-            // This function will only work if the page is opened from the Telegram bot
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.close();
+        
+        window.goBack = function() {
+            if (pageHistory.length > 1) {
+                const currentPageId = pageHistory.pop();
+                const previousPageId = pageHistory[pageHistory.length - 1];
+                document.getElementById(currentPageId).classList.remove('active');
+                document.getElementById(previousPageId).classList.add('active');
+                updateUI();
             }
         }
+        
+        function updateUI() {
+            const backButton = document.getElementById('back-button');
+            if (!backButton) return;
+
+            const currentPageId = pageHistory[pageHistory.length - 1];
+            if (currentPageId === 'home-page') {
+                backButton.style.display = 'none';
+            } else {
+                backButton.style.display = 'flex';
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('bg-white/20');
+                if (link.getAttribute('onclick').includes(currentPageId)) {
+                    link.classList.add('bg-white/20');
+                }
+            });
+        }
+
+        const rules = {
+            en: `<ul class="list-disc list-inside mt-4 space-y-2 text-gray-700 bg-yellow-50 border border-yellow-200 p-4 rounded-lg"><li>Using any kind of <b>VPN/Proxy</b> is strictly prohibited.</li><li>Only one user can work from the same <b>Wi-Fi/IP address</b>.</li><li>Your account will be <b>blocked</b> for violating the rules.</li><li>You can use <b>Mobile Data</b> to work if needed.</li></ul><p class="text-sm text-gray-500 mt-2">Our system will check your IP address before starting the task.</p>`,
+            bn: `<ul class="list-disc list-inside mt-4 space-y-2 text-gray-700 bg-yellow-50 border border-yellow-200 p-4 rounded-lg"><li>যেকোনো ধরনের <b>ভিপিএন/প্রক্সি</b> ব্যবহার করা সম্পূর্ণ নিষিদ্ধ।</li><li>একই <b>ওয়াইফাই/আইপি অ্যাড্রেস</b> থেকে শুধুমাত্র একজনই কাজ করতে পারবেন।</li><li>নিয়ম ভঙ্গ করলে আপনার অ্যাকাউন্টটি <b>ব্লক</b> করে দেওয়া হবে।</li><li>প্রয়োজনে আপনি <b>মোবাইল ডেটা</b> ব্যবহার করে কাজ করতে পারেন।</li></ul><p class="text-sm text-gray-500 mt-2">কাজ শুরু করার আগে আমাদের সিস্টেম আপনার আইপি অ্যাড্রেস পরীক্ষা করবে।</p>`
+        };
+        let currentLanguage = 'en';
+
+        const referralNoteLanguages = {
+            en: `
+                <p>You will receive a <b>10 BDT</b> bonus when your referred friend meets the following conditions:</p>
+                <ul class="list-disc list-inside mt-1">
+                    <li><span class="text-red-600 font-bold">Must complete a full 7 days of work.</span></li>
+                    <li><span class="text-red-600 font-bold">Must work actively for at least 15 days within a month.</span></li>
+                </ul>
+                <p class="text-xs text-gray-500 mt-2">The bonus will remain in your Pending Balance until the conditions are met.</p>
+            `,
+            bn: `
+                <p>আপনার রেফার করা বন্ধু নিচের শর্তগুলো পূরণ করলে আপনি <b>10 BDT</b> বোনাস পাবেন:</p>
+                <ul class="list-disc list-inside mt-1">
+                    <li><span class="text-red-600 font-bold">ন্যূনতম ৭ দিন সম্পূর্ণ কাজ করতে হবে।</span></li>
+                    <li><span class="text-red-600 font-bold">এক মাসের মধ্যে কমপক্ষে ১৫ দিন সক্রিয়ভাবে কাজ করতে হবে।</span></li>
+                </ul>
+                <p class="text-xs text-gray-500 mt-2">শর্ত পূরণ না হওয়া পর্যন্ত বোনাসটি আপনার Pending Balance-এ থাকবে।</p>
+            `
+        };
+        let currentReferralNoteLang = 'en';
+
+        window.toggleLanguage = function() {
+            currentLanguage = (currentLanguage === 'en') ? 'bn' : 'en';
+            document.getElementById('task-rules-content').innerHTML = rules[currentLanguage];
+            document.getElementById('lang-toggle').innerText = (currentLanguage === 'en') ? 'বাংলা' : 'English';
+        }
+
+        window.toggleReferralNoteLanguage = function() {
+            currentReferralNoteLang = (currentReferralNoteLang === 'en') ? 'bn' : 'en';
+            document.getElementById('referral-note-content').innerHTML = referralNoteLanguages[currentReferralNoteLang];
+            const toggleButton = document.getElementById('referral-lang-toggle');
+            toggleButton.innerText = (currentReferralNoteLang === 'en') ? 'বাংলা' : 'English';
+        }
+
+        // MODIFICATION: New function to redirect to the task subdomain
+        window.redirectToTaskPage = function() {
+            if (!currentUser || !currentUser.id) {
+                showToast("User information not found. Please restart the app.");
+                return;
+            }
+            // This is the correct URL for the new task landing page
+            const taskPageUrl = `https://task.allinonebd.me?userId=${currentUser.id}`;
+            window.Telegram.WebApp.openLink(taskPageUrl);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.opacity = 1;
+            setTimeout(() => {
+                toast.style.opacity = 0;
+            }, 2000);
+        }
+        
+        window.copyReferralLink = function() {
+            const referralLinkInput = document.getElementById('referral-link');
+            referralLinkInput.select();
+            referralLinkInput.setSelectionRange(0, 99999);
+            try {
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    showToast("Referral link copied!");
+                } else {
+                    showToast("Copy failed. Please copy manually.");
+                }
+            } catch (err) {
+                showToast("Copy failed. Please copy manually.");
+            }
+        }
+        
+        window.shareReferralLink = async function() {
+            const referralLink = document.getElementById('referral-link').value;
+            if (!referralLink || referralLink.includes('Loading') || referralLink.includes('Please open')) {
+                showToast("Referral link not available yet.");
+                return;
+            }
+
+            const shareText = "Hey! Join me on Allinonebd and start earning rewards! 💰";
+            const shareData = {
+                title: 'Join Allinonebd',
+                text: shareText,
+                url: referralLink,
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log("Share cancelled or failed", err);
+                }
+            } else {
+                const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.openTelegramLink(telegramShareUrl);
+                } else {
+                    window.open(telegramShareUrl, '_blank');
+                }
+            }
+        }
+
+        window.updateWithdrawUI = function() {
+            const method = document.getElementById('withdraw-method').value;
+            const label = document.getElementById('withdraw-address-label');
+            const input = document.getElementById('withdraw-address');
+            
+            if (method === 'payoneer') {
+                label.textContent = 'Payoneer Email';
+                input.placeholder = 'Enter your Payoneer email';
+            } else { 
+                label.textContent = 'Account Number';
+                input.placeholder = 'e.g., 01700000000';
+            }
+        }
+
+        window.addEventListener('load', async function () {
+            updateUI();
+            const rulesContentEl = document.getElementById('task-rules-content');
+            if (rulesContentEl) {
+                rulesContentEl.innerHTML = rules[currentLanguage];
+            }
+            
+            try {
+                const noticeRef = doc(db, "settings", "notice");
+                const noticeSnap = await getDoc(noticeRef);
+                const noticeBar = document.getElementById('notice-bar-text');
+                if (noticeBar) {
+                    noticeBar.innerText = noticeSnap.exists() ? noticeSnap.data().text : "Welcome to Allinonebd! Happy Earning!";
+                }
+
+                const tg = window.Telegram.WebApp;
+                
+                if (typeof tg === 'undefined' || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+                    document.getElementById('user-name').innerText = "Guest User";
+                    document.getElementById('user-balance').innerText = "BDT 0.00";
+                    document.getElementById('profile-name').innerText = "Guest User";
+                    document.getElementById('profile-username').innerText = "@guest";
+                    document.getElementById('profile-balance').innerText = "BDT 0.00";
+                    document.getElementById('profile-pending-balance').innerText = "BDT 0.00";
+                    document.getElementById('referral-link').value = "Please open in Telegram to get your link.";
+                    console.log("Running outside of Telegram or user data not found.");
+                    return; 
+                }
+                
+                tg.ready(); 
+                const user = tg.initDataUnsafe.user;
+                
+                if (!user) {
+                    throw new Error("User data not found in Telegram initData.");
+                }
+
+                currentUser = user; 
+
+                const userId = user.id.toString();
+                const userName = user.first_name + (user.last_name ? " " + user.last_name : "");
+                const userRef = doc(db, "users", userId);
+                const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    document.getElementById('user-name').innerText = userData.name;
+                    document.getElementById('user-balance').innerText = `BDT ${userData.balance.toFixed(2)}`;
+                    document.getElementById('total-referrals').innerText = userData.referrals || 0;
+                    document.getElementById('profile-name').innerText = userData.name;
+                    document.getElementById('profile-username').innerText = user.username ? `@${user.username}` : 'N/A';
+                    document.getElementById('profile-balance').innerText = `BDT ${userData.balance.toFixed(2)}`;
+                    document.getElementById('profile-pending-balance').innerText = `BDT ${(userData.pendingReferralBalance || 0).toFixed(2)}`;
+                    document.getElementById('profile-total-earned').innerText = `BDT ${(userData.totalEarned || userData.balance).toFixed(2)}`;
+                    document.getElementById('profile-ads-watched').innerText = userData.adsWatched || 0;
+                    document.getElementById('profile-total-referrals').innerText = userData.referrals || 0;
+                    document.getElementById('referral-link').value = `https://t.me/Allinonebdrealbot?start=${userId}`; 
+
+                } else {
+                    const newUser = {
+                        name: userName,
+                        username: user.username || null,
+                        balance: 0,
+                        pendingReferralBalance: 0,
+                        referrals: 0,
+                        totalEarned: 0,
+                        adsWatched: 0,
+                        joinedAt: new Date()
+                    };
+                    await setDoc(userRef, newUser);
+                    document.getElementById('user-name').innerText = newUser.name;
+                    document.getElementById('user-balance').innerText = `BDT ${newUser.balance.toFixed(2)}`;
+                    document.getElementById('profile-name').innerText = newUser.name;
+                    document.getElementById('profile-username').innerText = newUser.username ? `@${newUser.username}` : 'N/A';
+                    document.getElementById('profile-balance').innerText = `BDT ${newUser.balance.toFixed(2)}`;
+                    document.getElementById('profile-pending-balance').innerText = `BDT ${newUser.pendingReferralBalance.toFixed(2)}`;
+                    document.getElementById('referral-link').value = `https://t.me/Allinonebdrealbot?start=${userId}`;
+                }
+            } catch (error) {
+                console.error("Error during initialization: ", error);
+                document.getElementById('user-name').innerText = "Error during load";
+                document.getElementById('user-balance').innerText = "BDT 0.00";
+            }
+        });
     </script>
 </body>
 </html>
