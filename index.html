@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Task - Allinonebd</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header Section with Ad Banner -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600">Allinonebd Tasks</h1>
+        </div>
+        <div class="p-4 text-center bg-gray-200 border-t border-b">
+            <!-- Header Banner Ad (e.g., 728x90) goes here -->
+            <p class="text-gray-500">Header Banner Ad Placeholder</p>
+        </div>
+    </header>
+
+    <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-6">
+
+        <!-- Main Content: Task Offers -->
+        <main class="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-lg">
+            
+            <!-- App Install Offers Section -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">App Install Offers</h2>
+                <p class="text-gray-600 mb-6">Install the apps below and follow the instructions to earn rewards.</p>
+                <div class="space-y-4">
+                    <!-- Example Offer 1 -->
+                    <a href="#" target="_blank" class="block bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-all text-left">
+                        <p class="font-bold text-lg">Install App A & Get 50 BDT</p>
+                        <p class="text-sm opacity-90">Install and open the app for 5 minutes.</p>
+                    </a>
+                    <!-- Example Offer 2 -->
+                    <a href="#" target="_blank" class="block bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 transition-all text-left">
+                        <p class="font-bold text-lg">Install App B & Get 70 BDT</p>
+                        <p class="text-sm opacity-90">Install, register, and complete one level.</p>
+                    </a>
+                </div>
+            </div>
+
+            <hr class="my-8">
+
+            <!-- Mini Quiz Offers Section -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Mini Quiz Offers</h2>
+                <p class="text-gray-600 mb-6">Participate in the quiz, spend the required time, and earn rewards.</p>
+                <div class="space-y-4">
+                    <!-- Example Quiz Offer -->
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-lg text-gray-800">General Knowledge Quiz</p>
+                                <p class="text-sm text-gray-600">Answer 10 simple questions.</p>
+                            </div>
+                            <button onclick="startQuizTask()" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">Start Quiz</button>
+                        </div>
+                        <!-- Timer and Submit button will appear here -->
+                        <div id="quiz-timer-section" class="mt-4 text-center" style="display: none;">
+                            <p class="text-lg font-semibold text-red-600">Time remaining: <span id="timer">40</span>s</p>
+                            <p class="text-xs text-gray-500">Please stay on the quiz page. You can submit after the timer ends.</p>
+                            <button id="submit-quiz-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg mt-4 opacity-50 cursor-not-allowed" disabled>
+                                Submit Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post-Task Options (Initially hidden) -->
+            <div id="post-task-options" class="mt-8 text-center" style="display: none;">
+                <h3 class="text-xl font-bold text-green-600 mb-4">Task Submitted! What's next?</h3>
+                <div class="flex gap-4">
+                    <button class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600">Do Another Task</button>
+                    <button onclick="goBackToBot()" class="flex-1 bg-gray-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-800">Go Back to Bot</button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Sidebar with Ad Placeholders -->
+        <aside class="w-full lg:w-1/3 space-y-6">
+            <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+                <!-- Sidebar Ad (e.g., 300x250) goes here -->
+                <p class="text-gray-500">Sidebar Ad Placeholder 1</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+                <!-- Sidebar Ad (e.g., 300x600) goes here -->
+                <p class="text-gray-500">Sidebar Ad Placeholder 2</p>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Popup Ad logic can be added here -->
+
+    <script>
+        let userId = null;
+
+        // This script will read the user ID from the URL when the page loads
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            userId = urlParams.get('userId');
+            if (userId) {
+                console.log('Task page loaded for User ID:', userId);
+            } else {
+                document.body.innerHTML = "<h1 class='text-center text-red-500 p-10'>Invalid Access. Please open from the Telegram bot.</h1>";
+            }
+        };
+
+        // Function to handle the quiz task
+        function startQuizTask() {
+            // Replace '#' with the actual quiz link from your CPA network
+            window.open('#', '_blank');
+
+            const timerSection = document.getElementById('quiz-timer-section');
+            const submitButton = document.getElementById('submit-quiz-btn');
+            const timerDisplay = document.getElementById('timer');
+            timerSection.style.display = 'block';
+
+            let timeLeft = 40;
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = '0';
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    submitButton.textContent = 'Click to Submit Task';
+                    submitButton.onclick = submitTask; // Assign the submit function
+                }
+            }, 1000);
+        }
+
+        // Function to handle task submission
+        function submitTask() {
+            // In a real scenario, this would send a request to your backend for verification
+            console.log(`Task submitted for user: ${userId}`);
+            
+            // Hide the task sections and show post-task options
+            document.getElementById('quiz-timer-section').style.display = 'none';
+            document.getElementById('post-task-options').style.display = 'block';
+            alert("Task submitted successfully! Your reward will be added after verification.");
+        }
+
+        // Function to go back to the bot (closes the web app)
+        function goBackToBot() {
+            // This function will only work if the page is opened from the Telegram bot
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.close();
+            }
+        }
+    </script>
+</body>
+</html>
